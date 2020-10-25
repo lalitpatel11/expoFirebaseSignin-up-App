@@ -1,21 +1,36 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { createAppContainer, createStackNavigator ,createSwitchNavigator} from 'react-navigation';
+import SignupScreen from './screens/SignupScreen';
+import LoginScreen from './screens/LoginScreen';
+import LoadingScreen from './screens/LoadingScreen';
+import HomeScreen from './screens/HomeScreen';
+import * as firebase from 'firebase';
+import 'firebase/firestore';
+import {firebaseConfig} from './config';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+!firebase.apps.length
+  ? firebase.initializeApp(firebaseConfig).firestore()
+  : firebase.app().firestore();
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const myStack = createStackNavigator({
+  Signup: SignupScreen,
+  login: LoginScreen
+}, {
+  defaultNavigationOptions: {
+    headerStyle: {
+      backgroundColor: "#d9534f",
+    },
+    headerTintColor: "#fff",
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    }
+  }
+})
+
+const mySwitch=createSwitchNavigator({
+  Loading: LoadingScreen,
+  HomeScreen: HomeScreen,
+  stack:myStack
+})
+export default createAppContainer(mySwitch)
